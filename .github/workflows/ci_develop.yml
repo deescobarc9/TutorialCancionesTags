@@ -41,10 +41,3 @@ jobs:
         env:
           MENSAJE_ERROR: Una o varias pruebas fallaron
         run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
-      - name: Validar resultado sin errores
-        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && success() }}
-        uses: tukasz/direct-merge-action@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source-branch: develop
-          target-branch: ${{ github.ref }}
