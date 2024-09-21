@@ -13,6 +13,11 @@ jobs:
     name: Pruebas
     runs-on: ubuntu-latest
     steps:
+    - name: Imprimir
+      env:
+        MI_VARIABLE: Hola mundo David
+      run: |
+        echo $MI_VARIABLE.
     - name: Checkout de repositorio
       uses: actions/checkout@v2
     - name: Configuración de entorno de python
