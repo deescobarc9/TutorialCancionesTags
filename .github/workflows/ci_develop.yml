@@ -36,6 +36,7 @@ jobs:
         run: |
           git checkout ${{ github.ref }}
           python -m unittest discover -s tests
+          git checkout develop
       - name: Validar resultado con errores
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && failure() }}
         env:
