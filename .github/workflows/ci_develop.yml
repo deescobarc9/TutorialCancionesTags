@@ -13,13 +13,13 @@ jobs:
       - name: Validar palabra clave del commit
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         uses: actions/checkout@v2
-      - name: Mezcla ${{ github.ref }} -> develop
+      - name: Mezcla develop -> ${{ github.ref }}
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source-branch: ${{ github.ref }}
-          target-branch: develop
+          source-branch: develop
+          target-branch: ${{ github.ref }}
       - name: Configuración de entorno de python
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         uses: actions/setup-python@v2
@@ -41,3 +41,10 @@ jobs:
         env:
           MENSAJE_ERROR: Una o varias pruebas fallaron
         run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+      - name: Validar resultado sin errores
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && success() }}
+        uses: tukasz/direct-merge-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: ${{ github.ref }}
+          target-branch: develop
