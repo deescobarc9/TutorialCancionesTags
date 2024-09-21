@@ -13,7 +13,7 @@ jobs:
       - name: Crear rama release
         if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         run: |
-          git checkout -b release/${{env.DATETIME}}
+          git checkout -b release/${{date "+%H_%M_%S_%d_%m_%y"}}
           git push -f -u origin release/${{env.DATETIME}}
       - name: Mezcla develop -> release/${{env.DATETIME}}
         if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
