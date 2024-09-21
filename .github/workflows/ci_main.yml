@@ -15,7 +15,6 @@ jobs:
         run: |
           git checkout -b release/${{env.DATETIME}}
           git push -f -u origin release/${{env.DATETIME}}
-
       - name: Mezcla develop -> release/${{env.DATETIME}}
         if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         uses: tukasz/direct-merge-action@master
@@ -24,6 +23,7 @@ jobs:
           source-branch: develop
           target-branch: release/${{env.DATETIME}}
       - name: Configuración de entorno de python
+        if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         uses: actions/setup-python@v5
         with:
             python-version: '3.9'
