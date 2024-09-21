@@ -37,12 +37,12 @@ jobs:
           git checkout ${{ github.ref }}
           python -m unittest discover -s tests
       - name: Validar resultado con errores
-        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }} && ${{ failure() }}
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && failure() }}
         env:
           MENSAJE_ERROR: Una o varias pruebas fallaron
         run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
       - name: Validar resultado sin errores
-        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }} && ${{ success() }}
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && success() }}
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
