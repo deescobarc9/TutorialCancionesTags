@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Validar palabra clave del commit
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Mezcla develop -> ${{ github.ref }}
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         uses: tukasz/direct-merge-action@master
@@ -22,9 +22,9 @@ jobs:
           target-branch: ${{ github.ref }}
       - name: Configuración de entorno de python
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.7'
+          python-version: '3.9'
       - name: Instalación de librerías y dependencias
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         run: |
