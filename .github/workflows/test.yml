@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Imprimir
       env:
-        MI_VARIABLE: Hola mundo David
+        MI_VARIABLE: Hola mundo David E
       run: |
         echo $MI_VARIABLE.
     - name: Checkout de repositorio
