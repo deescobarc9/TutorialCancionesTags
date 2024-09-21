@@ -10,20 +10,23 @@ jobs:
       - name: Validar palabra clave del commit
         if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         uses: actions/checkout@v4
+      - name: Obtener fecha
+        id: get_date # Call the action with an ID to retrieve the outputs
+        uses: ithaque-renovation/latest-commit-date-action@v1
       - name: Crear rama release
-        uses: benzine-framework/action-get-datetime@v1
+        if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         run: |
-          git checkout -b release/${{env.DATETIME}}
-          git push -f -u origin release/${{env.DATETIME}}
-
-      - name: Mezcla develop -> release/${{env.DATETIME}}
+          git checkout -b release/${{steps.get_date.outputs.latest-commit-date}}
+          git push -f -u origin release/${{steps.get_date.outputs.latest-commit-date}}
+      - name: Mezcla develop -> release/${{steps.get_date.outputs.latest-commit-date}}
         if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           source-branch: develop
-          target-branch: release/${{env.DATETIME}}
+          target-branch: release/${{steps.get_date.outputs.latest-commit-date}}
       - name: Configuración de entorno de python
+        if: ${{ contains(github.event.head_commit.message, 'LANZAR VERSION') }}
         uses: actions/setup-python@v5
         with:
             python-version: '3.9'
@@ -51,5 +54,5 @@ jobs:
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source-branch: release/${{env.DATETIME}}
+          source-branch: release/${{steps.get_date.outputs.latest-commit-date}}
           target-branch: main

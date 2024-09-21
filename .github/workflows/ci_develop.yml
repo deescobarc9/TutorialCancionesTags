@@ -12,35 +12,39 @@ jobs:
     steps:
       - name: Validar palabra clave del commit
         if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
-        uses: actions/checkout@v2
-      - name: Mezcla ${{ github.ref }} -> develop
-        uses: tukasz/direct-merge-action@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          source-branch: ${{ github.ref }}
-          target-branch: develop
-      - name: Configuración de entorno de python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.7'
-      - name: Instalación de librerías y dependencias
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Correr pruebas
-        id: correr-pruebas
-        run: |
-          git checkout ${{ github.ref }}
-          python -m unittest discover -s tests
-      - name: Validar resultado con errores
-        if: ${{ failure() }}
-        env:
-          MENSAJE_ERROR: Una o varias pruebas fallaron
-        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
-      - name: Validar resultado sin errores
-        if: ${{ success() }}
+        uses: actions/checkout@v4
+      - name: Mezcla develop -> ${{ github.ref }}
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           source-branch: develop
           target-branch: ${{ github.ref }}
+      - name: Configuración de entorno de python
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Instalación de librerías y dependencias
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Correr pruebas
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') }}
+        id: correr-pruebas
+        run: |
+          git checkout ${{ github.ref }}
+          python -m unittest discover -s tests
+      - name: Validar resultado con errores
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && failure() }}
+        env:
+          MENSAJE_ERROR: Una o varias pruebas fallaron
+        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+      - name: Validar resultado sin errores
+        if: ${{ contains(github.event.head_commit.message, 'TAREA TERMINADA') && success() }}
+        uses: tukasz/direct-merge-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: ${{ github.ref }}
+          target-branch: develop
